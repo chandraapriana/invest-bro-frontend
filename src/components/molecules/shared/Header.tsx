@@ -4,7 +4,7 @@ import React from "react";
 const Header = () => {
   return (
     <div className="w-full flex flex-row">
-      <Text variant={"body500"}>InvestBro</Text>
+      <Text variant={"body600"}>InvestBro</Text>
     </div>
   );
 };
