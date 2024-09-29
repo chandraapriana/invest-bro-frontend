@@ -10,7 +10,7 @@ const roboto = Roboto({
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <ThemeProvider attribute="class" defaultTheme="light">
+    <ThemeProvider defaultTheme="light">
       <main className={roboto.className}>
         <Component {...pageProps} />
       </main>

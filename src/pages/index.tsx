@@ -1,9 +1,5 @@
-import { Button } from "@/components/ui/button";
+import HomePage from "@/components/pages/home/HomePage";
 
 export default function Home() {
-  return (
-    <div className={` `}>
-      <Button>Test</Button>
-    </div>
-  );
+  return <HomePage />;
 }
