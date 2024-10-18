@@ -1,16 +1,26 @@
+/* eslint-disable @typescript-eslint/no-empty-object-type */
 import React from "react";
 import MainContainer from "../layouts/MainContainer";
 
 import Header from "../molecules/shared/Header";
 import MainText from "../molecules/home/MainText";
-import InvestmentSettings from "../organism/home/InvestmentSettings";
+import InvestmentSettings, {
+  InvestmentSettingsProps,
+} from "../organism/home/InvestmentSettings";
 
-const HomeTemplate = () => {
+export interface HomeTemplateProps extends InvestmentSettingsProps {}
+
+const HomeTemplate = (props: HomeTemplateProps) => {
   return (
     <MainContainer>
       <Header />
       <MainText />
-      <InvestmentSettings />
+      <InvestmentSettings
+        onSubmit={props.onSubmit}
+        stockIdTickerList={props.stockIdTickerList}
+        stockUsTickerList={props.stockUsTickerList}
+        cryptoTickerList={props.cryptoTickerList}
+      />
     </MainContainer>
   );
 };
