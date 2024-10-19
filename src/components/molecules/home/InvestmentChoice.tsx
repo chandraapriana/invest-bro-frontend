@@ -117,7 +117,9 @@ const InvestmentChoice = (props: InvestmentChoiceProps) => {
       const newSelectId = newOptions[categoryIndex].selects.length;
       newOptions[categoryIndex].selects.push({
         id: newSelectId,
-        ticker: "",
+        ticker: newOptions[categoryIndex].isFixed
+          ? newOptions[categoryIndex].options[0].ticker
+          : "",
         startInvestment: "",
         regularInvestment: "",
       });
@@ -152,20 +154,30 @@ const InvestmentChoice = (props: InvestmentChoiceProps) => {
     };
 
     investmentOptions.forEach((option) => {
-      option.selects.forEach((select) => {
-        if (
-          select.ticker &&
-          select.startInvestment &&
-          select.regularInvestment
-        ) {
-          result[option.key].push({
-            ticker: select.ticker,
-            startInvestment: parseInt(select.startInvestment),
-            regularInvestment: parseInt(select.regularInvestment),
-          });
-        }
-      });
+      if (option.isFixed && option.selects.length === 0) {
+        // For fixed options, add a default entry if no selects are present
+        result[option.key].push({
+          ticker: option.options[0].ticker,
+          startInvestment: 0,
+          regularInvestment: 0,
+        });
+      } else {
+        option.selects.forEach((select) => {
+          if (
+            (select.ticker || option.isFixed) &&
+            select.startInvestment &&
+            select.regularInvestment
+          ) {
+            result[option.key].push({
+              ticker: option.isFixed ? option.options[0].ticker : select.ticker,
+              startInvestment: parseInt(select.startInvestment),
+              regularInvestment: parseInt(select.regularInvestment),
+            });
+          }
+        });
+      }
     });
+
     console.log(result);
     props.onSubmit(result);
   };

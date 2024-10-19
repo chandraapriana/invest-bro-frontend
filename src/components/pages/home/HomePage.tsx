@@ -11,10 +11,12 @@ const HomePage = () => {
     handleRepeatType,
     handleStartDate,
     handleSubmit,
+    chartData,
   } = useHome();
 
   return (
     <HomeTemplate
+      chartData={chartData}
       onChangeEndDate={handleEndDate}
       onChangeStartDate={handleStartDate}
       onChangeRepeatType={handleRepeatType}

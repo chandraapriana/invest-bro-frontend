@@ -7,8 +7,14 @@ import MainText from "../molecules/home/MainText";
 import InvestmentSettings, {
   InvestmentSettingsProps,
 } from "../organism/home/InvestmentSettings";
+import {
+  ChartPerformanceEachAssets,
+  ChartPerformanceEachAssetsProps,
+} from "../organism/home/ChartPerformanceEachAssets";
 
-export interface HomeTemplateProps extends InvestmentSettingsProps {}
+export interface HomeTemplateProps
+  extends InvestmentSettingsProps,
+    ChartPerformanceEachAssetsProps {}
 
 const HomeTemplate = (props: HomeTemplateProps) => {
   return (
@@ -24,6 +30,12 @@ const HomeTemplate = (props: HomeTemplateProps) => {
         stockUsTickerList={props.stockUsTickerList}
         cryptoTickerList={props.cryptoTickerList}
       />
+      {props.chartData.length !== 0 && (
+        <ChartPerformanceEachAssets
+          key={JSON.stringify(props.chartData)}
+          chartData={props.chartData}
+        />
+      )}
     </MainContainer>
   );
 };
