@@ -27,7 +27,7 @@ interface InvestmentItem {
   regularInvestment: number;
 }
 
-interface InvestmentResult {
+interface InvestmentChoice {
   US_STOCK: InvestmentItem[];
   ID_STOCK: InvestmentItem[];
   CRYPTO: InvestmentItem[];
@@ -36,7 +36,7 @@ interface InvestmentResult {
   RDPU: InvestmentItem[];
 }
 
-type InvestmentKey = keyof InvestmentResult;
+type InvestmentKey = keyof InvestmentChoice;
 
 interface InvestmentOption {
   category: string;
@@ -50,7 +50,7 @@ export interface InvestmentChoiceProps {
   stockIdTickerList: TickerList;
   stockUsTickerList: TickerList;
   cryptoTickerList: TickerList;
-  onSubmit: (data: InvestmentResult) => void;
+  onSubmit: (data: InvestmentChoice) => void;
 }
 
 const InvestmentChoice = (props: InvestmentChoiceProps) => {
@@ -142,7 +142,7 @@ const InvestmentChoice = (props: InvestmentChoiceProps) => {
   };
 
   const handleSubmit = () => {
-    const result: InvestmentResult = {
+    const result: InvestmentChoice = {
       US_STOCK: [],
       ID_STOCK: [],
       CRYPTO: [],

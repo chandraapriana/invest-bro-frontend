@@ -7,12 +7,18 @@ const HomePage = () => {
     getStockIDTickerListQuery,
     getCryptoTickerListQuery,
     getStockUSTickerListQuery,
+    handleEndDate,
+    handleRepeatType,
+    handleStartDate,
+    handleSubmit,
   } = useHome();
 
-  console.log(getStockIDTickerListQuery.data);
   return (
     <HomeTemplate
-      onSubmit={(data) => console.log(data)}
+      onChangeEndDate={handleEndDate}
+      onChangeStartDate={handleStartDate}
+      onChangeRepeatType={handleRepeatType}
+      onSubmit={handleSubmit}
       stockIdTickerList={getStockIDTickerListQuery.data ?? []}
       stockUsTickerList={getStockUSTickerListQuery.data ?? []}
       cryptoTickerList={getCryptoTickerListQuery.data ?? []}

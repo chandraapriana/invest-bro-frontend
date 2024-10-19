@@ -16,6 +16,9 @@ const HomeTemplate = (props: HomeTemplateProps) => {
       <Header />
       <MainText />
       <InvestmentSettings
+        onChangeEndDate={props.onChangeEndDate}
+        onChangeRepeatType={props.onChangeRepeatType}
+        onChangeStartDate={props.onChangeStartDate}
         onSubmit={props.onSubmit}
         stockIdTickerList={props.stockIdTickerList}
         stockUsTickerList={props.stockUsTickerList}
