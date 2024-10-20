@@ -5,7 +5,7 @@ import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import { format } from "date-fns";
 import { Calendar as CalendarIcon, Repeat } from "lucide-react";
-
+import { endOfMonth } from "date-fns";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -51,9 +51,10 @@ export default function InvestmentAmount(props: InvestmentAmountProps) {
   };
 
   const handleEndDateChange = (date: Value) => {
-    setEndDate(date);
     if (date instanceof Date) {
-      props.onChangeEndDate(format(date, "yyyy-MM-dd")); // Pass formatted date
+      const lastDayOfMonth = endOfMonth(date); // Dapatkan tanggal terakhir dari bulan tersebut
+      setEndDate(lastDayOfMonth); // Set tanggal terakhir bulan tersebut sebagai endDate
+      props.onChangeEndDate(format(lastDayOfMonth, "yyyy-MM-dd")); // Pass formatted date
     }
   };
 

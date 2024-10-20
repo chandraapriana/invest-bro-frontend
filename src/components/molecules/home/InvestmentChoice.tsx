@@ -154,28 +154,19 @@ const InvestmentChoice = (props: InvestmentChoiceProps) => {
     };
 
     investmentOptions.forEach((option) => {
-      if (option.isFixed && option.selects.length === 0) {
-        // For fixed options, add a default entry if no selects are present
-        result[option.key].push({
-          ticker: option.options[0].ticker,
-          startInvestment: 0,
-          regularInvestment: 0,
-        });
-      } else {
-        option.selects.forEach((select) => {
-          if (
-            (select.ticker || option.isFixed) &&
-            select.startInvestment &&
-            select.regularInvestment
-          ) {
-            result[option.key].push({
-              ticker: option.isFixed ? option.options[0].ticker : select.ticker,
-              startInvestment: parseInt(select.startInvestment),
-              regularInvestment: parseInt(select.regularInvestment),
-            });
-          }
-        });
-      }
+      option.selects.forEach((select) => {
+        if (
+          (select.ticker || option.isFixed) &&
+          select.startInvestment &&
+          select.regularInvestment
+        ) {
+          result[option.key].push({
+            ticker: option.isFixed ? option.options[0].ticker : select.ticker,
+            startInvestment: parseInt(select.startInvestment),
+            regularInvestment: parseInt(select.regularInvestment),
+          });
+        }
+      });
     });
 
     console.log(result);

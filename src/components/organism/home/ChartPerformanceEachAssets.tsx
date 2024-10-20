@@ -1,6 +1,6 @@
 "use client";
 
-import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
+import { Area, CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
 
 import {
   Card,
@@ -13,6 +13,8 @@ import {
 import {
   ChartConfig,
   ChartContainer,
+  ChartLegend,
+  ChartLegendContent,
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
@@ -69,21 +71,22 @@ export function ChartPerformanceEachAssets(
             <CartesianGrid vertical={true} />
             <XAxis
               dataKey="date"
-              tickLine={false}
-              axisLine={false}
+              tickLine={true}
+              axisLine={true}
               tickMargin={8}
               tickFormatter={(value) => value.slice(0, 7)}
             />
             <YAxis
-              tickLine={false}
-              axisLine={false}
+              tickLine={true}
+              axisLine={true}
               tickMargin={8}
-              tickCount={3}
+              tickCount={10}
             />
             <ChartTooltip
               cursor={false}
               content={<ChartTooltipContent className="bg-white" />}
             />
+            <ChartLegend content={<ChartLegendContent />} />
             {listTicker.map((ticker) => (
               <Line
                 key={ticker}
