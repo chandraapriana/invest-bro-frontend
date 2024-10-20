@@ -93,7 +93,7 @@ export function ChartPerformanceEachAssets(
                 dataKey={ticker}
                 type="monotone"
                 stroke={chartConfig[ticker].color}
-                strokeWidth={2}
+                strokeWidth={4}
                 dot={false}
               />
             ))}

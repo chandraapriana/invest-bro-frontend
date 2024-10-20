@@ -67,7 +67,7 @@ export const useHome = () => {
     setRepeatType(type);
   }, []);
 
-  function calculateStableDCA(
+  function calculateStableDCA2(
     regularInvestment: number,
     intervalInvestment: "daily" | "weekly" | "monthly",
     startDate: string,
@@ -142,6 +142,105 @@ export const useHome = () => {
     };
   }
 
+  function calculateStableDCA(
+    regularInvestment: number,
+    intervalInvestment: "daily" | "weekly" | "monthly",
+    startDate: string,
+    endDate: string,
+    annualReturn: number
+  ): {
+    totalUnits: number;
+    totalInvested: number;
+    currentValue: number;
+    historyGrowth: { date: string; value: number }[];
+  } {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    const historyGrowth: { date: string; value: number }[] = [];
+
+    let totalInvested = 0;
+    let currentValue = 0;
+    const dailyReturn = Math.pow(1 + annualReturn / 100, 1 / 365) - 1;
+
+    const investments: { date: Date; amount: number }[] = [];
+
+    // Helper function to get the next valid investment date based on interval
+    const getNextValidDate = (currentDate: Date, interval: string): Date => {
+      let nextDate = new Date(currentDate);
+
+      if (interval === "monthly") {
+        // Move to the first of the next month
+        nextDate.setMonth(nextDate.getMonth() + 1);
+        nextDate.setDate(1);
+        // Find the first Tuesday of that month
+        while (nextDate.getDay() !== 2) {
+          // 2 = Tuesday
+          nextDate.setDate(nextDate.getDate() + 1);
+        }
+      } else if (interval === "weekly") {
+        // Add 7 days to the current date
+        nextDate.setDate(nextDate.getDate() + 7);
+        // Move to next Tuesday
+        while (nextDate.getDay() !== 2) {
+          // 2 = Tuesday
+          nextDate.setDate(nextDate.getDate() + 1);
+        }
+      } else if (interval === "daily") {
+        // Add 1 day to the current date
+        nextDate.setDate(nextDate.getDate() + 1);
+      }
+
+      // If the next date falls on a weekend, adjust to Monday or Tuesday
+      if (nextDate.getDay() === 0) nextDate.setDate(nextDate.getDate() + 2); // If Sunday, move to Tuesday
+      if (nextDate.getDay() === 6) nextDate.setDate(nextDate.getDate() + 3); // If Saturday, move to Tuesday
+
+      return nextDate;
+    };
+
+    let currentDate = new Date(start);
+
+    // Loop until the current date exceeds the end date
+    while (currentDate <= end) {
+      const investmentDate = getNextValidDate(currentDate, intervalInvestment);
+
+      // Check if the investment date is beyond the end date
+      if (investmentDate > end) break;
+
+      // Record each investment
+      investments.push({
+        date: new Date(investmentDate),
+        amount: regularInvestment,
+      });
+      totalInvested += regularInvestment;
+
+      // Calculate the current value with compounding
+      currentValue = investments.reduce((total, investment) => {
+        const daysInvested =
+          (investmentDate.getTime() - investment.date.getTime()) /
+          (1000 * 3600 * 24);
+        const compoundedValue =
+          investment.amount * Math.pow(1 + dailyReturn, daysInvested);
+        return total + compoundedValue;
+      }, 0);
+
+      // Store growth history
+      historyGrowth.push({
+        date: investmentDate.toISOString().split("T")[0],
+        value: currentValue,
+      });
+
+      // Update currentDate to the next investment date
+      currentDate = new Date(investmentDate);
+    }
+
+    return {
+      totalUnits: totalInvested, // Total invested as units
+      totalInvested: totalInvested, // Total money invested without growth
+      currentValue: currentValue, // Current value after compounding
+      historyGrowth: historyGrowth,
+    };
+  }
+
   function calculateDCA(
     historicalData: { [key: string]: number },
     regularInvestment: number,
@@ -151,8 +250,10 @@ export const useHome = () => {
     totalInvested: number;
     currentValue: number;
     historyGrowth: { date: string; value: number }[];
+    historyCost: { date: string; value: number }[];
   } {
     const historyGrowth: { date: string; value: number }[] = [];
+    const historyCost: { date: string; value: number }[] = [];
     const dates = Object.keys(historicalData).sort(
       (a, b) => new Date(a).getTime() - new Date(b).getTime()
     );
@@ -186,16 +287,19 @@ export const useHome = () => {
         );
 
         const investmentDate = getNextValidTuesday(new Date(firstOfMonth));
-        console.log(currentDate.getTime(), investmentDate.getTime());
+
         // Jika hari ini adalah hari Selasa pertama dalam bulan
 
-        console.log("masuk pak eko");
         if (lastInvestmentMonth !== currentDate.getMonth()) {
           totalUnits += regularInvestment / price; // Membeli unit berdasarkan harga
           totalInvested += regularInvestment;
           historyGrowth.push({
             date: currentDate.toISOString().split("T")[0],
             value: totalUnits * price, // Nilai saat ini berdasarkan harga
+          });
+          historyCost.push({
+            date: currentDate.toISOString().split("T")[0],
+            value: totalInvested,
           });
           lastInvestmentMonth = currentDate.getMonth(); // Perbarui bulan terakhir investasi
         }
@@ -211,6 +315,10 @@ export const useHome = () => {
             date: currentDate.toISOString().split("T")[0],
             value: totalUnits * price, // Nilai saat ini
           });
+          historyCost.push({
+            date: currentDate.toISOString().split("T")[0],
+            value: totalInvested,
+          });
         }
       }
 
@@ -223,6 +331,10 @@ export const useHome = () => {
           historyGrowth.push({
             date: currentDate.toISOString().split("T")[0],
             value: totalUnits * price, // Nilai saat ini
+          });
+          historyCost.push({
+            date: currentDate.toISOString().split("T")[0],
+            value: totalInvested,
           });
         }
       }
@@ -237,6 +349,7 @@ export const useHome = () => {
       totalInvested: totalInvested,
       currentValue: currentValue,
       historyGrowth: historyGrowth,
+      historyCost: historyCost,
     };
   }
 
@@ -378,12 +491,17 @@ export const useHome = () => {
             (stock) => stock.ticker === ticker
           );
           if (stockData) {
-            const { historyGrowth } = calculateDCA(
+            const { historyGrowth, totalInvested, currentValue } = calculateDCA(
               history,
               stockData.regularInvestment,
               repeatType
             );
-            console.log("US STOCK===", historyGrowth);
+            console.log(
+              "US STOCK===",
+              totalInvested,
+              currentValue,
+              historyGrowth
+            );
 
             // Merge the historyGrowth data into the allHistoryGrowth object
             mergeHistoryGrowth(historyGrowth, ticker);
@@ -483,6 +601,24 @@ export const useHome = () => {
 
           //  Merge the historyGrowth data into the allHistoryGrowth object
           mergeHistoryGrowth(historyGrowth, "RDPT");
+        }
+      }
+      console.log(data.RDPU);
+      if (data.RDPU.length !== 0) {
+        const RDPUData = data.RDPU.find((stock) => stock.ticker === "RDPU");
+
+        if (RDPUData) {
+          const { historyGrowth } = calculateStableDCA(
+            RDPUData.regularInvestment,
+            repeatType,
+            startDate,
+            endDate,
+            4
+          );
+          console.log("RDPU====", historyGrowth);
+
+          //  Merge the historyGrowth data into the allHistoryGrowth object
+          mergeHistoryGrowth(historyGrowth, "RDPU");
         }
       }
       console.log(allHistoryGrowth);
