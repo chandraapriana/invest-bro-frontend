@@ -20,6 +20,8 @@ import {
 import { useMemo } from "react";
 import { chartColor } from "@/utils/listChartColor";
 import useIsMobile from "@/hooks/useIsMobile";
+import { thousandsSeparator } from "@/utils/helper";
+import { calculateMaxDrawdown } from "@/utils/calculationDCA";
 
 export const description = "A multiple line chart";
 
@@ -54,10 +56,62 @@ export function ChartPerformanceEachAssets(
     return config;
   }, [listTicker]);
 
+  const totalGrowth = useMemo(
+    () => props.chartData[props.chartData.length - 1]["GROWTH"],
+    [props.chartData]
+  );
+  const totalCost = useMemo(
+    () => props.chartData[props.chartData.length - 1]["COST"],
+    [props.chartData]
+  );
+  const growthPercentage = useMemo(
+    () => (((totalGrowth - totalCost) / totalCost) * 100).toFixed(0),
+    [totalCost, totalGrowth]
+  );
+
+  const maxDrawdown = useMemo(
+    () => calculateMaxDrawdown(props.chartData).toFixed(0),
+    [props.chartData]
+  );
+
   return (
     <Card className="w-full">
-      <CardHeader>
-        <CardTitle>{props.title}</CardTitle>
+      <CardHeader className="flex flex-col items-stretch space-y-0 border-b p-0 sm:flex-row">
+        <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
+          <CardTitle>{props.title}</CardTitle>
+        </div>
+        <div className="flex">
+          <div className="flex flex-1 flex-col justify-center gap-1 border-t px-6 py-4 text-left even:border-l data-[active=true]:bg-muted/50 sm:border-l sm:border-t-0 sm:px-8 sm:py-6">
+            <span className="text-xs text-muted-foreground">
+              Total Pembelian
+            </span>
+            <span className="text-lg font-bold leading-none sm:text-3xl">
+              {thousandsSeparator(totalCost ?? 0)}
+            </span>
+          </div>
+          <div className="flex flex-1 flex-col justify-center gap-1 border-t px-6 py-4 text-left even:border-l data-[active=true]:bg-muted/50 sm:border-l sm:border-t-0 sm:px-8 sm:py-6">
+            <span className="text-xs text-muted-foreground">Total Value</span>
+            <span className="text-lg font-bold leading-none sm:text-3xl">
+              {thousandsSeparator(totalGrowth ?? 0)}
+            </span>
+          </div>
+          <div className="flex flex-1 flex-col justify-center gap-1 border-t px-6 py-4 text-left even:border-l data-[active=true]:bg-muted/50 sm:border-l sm:border-t-0 sm:px-8 sm:py-6">
+            <span className="text-xs text-muted-foreground">
+              Persentase Pertumbuhan
+            </span>
+            <span className="text-lg font-bold leading-none sm:text-3xl">
+              {thousandsSeparator(parseInt(growthPercentage) ?? 0)}%
+            </span>
+          </div>
+          <div className="flex flex-1 flex-col justify-center gap-1 border-t px-6 py-4 text-left even:border-l data-[active=true]:bg-muted/50 sm:border-l sm:border-t-0 sm:px-8 sm:py-6">
+            <span className="text-xs text-muted-foreground">
+              Kerugian Maksimum
+            </span>
+            <span className="text-lg font-bold leading-none sm:text-3xl">
+              {maxDrawdown}%
+            </span>
+          </div>
+        </div>
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig}>

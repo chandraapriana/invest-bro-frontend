@@ -395,3 +395,25 @@ export function calculateDCA2(
     historyGrowth: historyGrowth,
   };
 }
+
+export function calculateMaxDrawdown(
+  data: {
+    [key: string]: number;
+    date: string;
+  }[]
+): number {
+  let peak = data[0].GROWTH;
+  let maxDrawdown = 0;
+
+  data.forEach((point) => {
+    if (point.GROWTH > peak) {
+      peak = point.GROWTH; // update peak when a new high is found
+    }
+    const drawdown = (peak - point.GROWTH) / peak; // calculate drawdown
+    if (drawdown > maxDrawdown) {
+      maxDrawdown = drawdown; // update maxDrawdown if current drawdown is larger
+    }
+  });
+
+  return maxDrawdown * 100; // return as percentage
+}
