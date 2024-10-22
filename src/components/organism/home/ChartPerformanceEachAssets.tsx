@@ -1,6 +1,6 @@
 "use client";
 
-import { Area, CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
+import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
 
 import {
   Card,
@@ -11,7 +11,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import {
-  ChartConfig,
   ChartContainer,
   ChartLegend,
   ChartLegendContent,
@@ -93,7 +92,7 @@ export function ChartPerformanceEachAssets(
                 dataKey={ticker}
                 type="monotone"
                 stroke={chartConfig[ticker].color}
-                strokeWidth={4}
+                strokeWidth={2}
                 dot={false}
               />
             ))}
