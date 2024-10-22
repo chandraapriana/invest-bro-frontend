@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/chart";
 import { useMemo } from "react";
 import { chartColor } from "@/utils/listChartColor";
+import useIsMobile from "@/hooks/useIsMobile";
 
 export const description = "A multiple line chart";
 
@@ -27,11 +28,13 @@ export interface ChartPerformanceEachAssetsProps {
     [key: string]: number;
     date: string;
   }[];
+  title: string;
 }
 
 export function ChartPerformanceEachAssets(
   props: ChartPerformanceEachAssetsProps
 ) {
+  const isMobile = useIsMobile();
   const listTicker = useMemo(
     () =>
       Object.keys(props.chartData[props.chartData.length - 1]).filter(
@@ -54,8 +57,7 @@ export function ChartPerformanceEachAssets(
   return (
     <Card className="w-full">
       <CardHeader>
-        <CardTitle>Chart Performa Setiap Asset</CardTitle>
-        <CardDescription>January - June 2024</CardDescription>
+        <CardTitle>{props.title}</CardTitle>
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig}>
@@ -75,12 +77,15 @@ export function ChartPerformanceEachAssets(
               tickMargin={8}
               tickFormatter={(value) => value.slice(0, 7)}
             />
-            <YAxis
-              tickLine={true}
-              axisLine={true}
-              tickMargin={8}
-              tickCount={10}
-            />
+            {!isMobile && (
+              <YAxis
+                tickLine={true}
+                axisLine={true}
+                tickMargin={8}
+                tickCount={10}
+              />
+            )}
+
             <ChartTooltip
               cursor={false}
               content={<ChartTooltipContent className="bg-white" />}

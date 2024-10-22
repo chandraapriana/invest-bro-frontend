@@ -37,12 +37,14 @@ const HomeTemplate = (props: HomeTemplateProps) => {
       />
       {props.sumChartData.length !== 0 && (
         <ChartPerformanceEachAssets
+          title="Performa Keseluruhan Portfolio"
           key={JSON.stringify(props.sumChartData)}
           chartData={props.sumChartData}
         />
       )}
       {props.chartData.length !== 0 && (
         <ChartPerformanceEachAssets
+          title="Performa Portfolio Setiap Aset"
           key={JSON.stringify(props.chartData)}
           chartData={props.chartData}
         />
