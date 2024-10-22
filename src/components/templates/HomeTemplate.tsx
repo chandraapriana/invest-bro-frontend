@@ -14,7 +14,12 @@ import {
 
 export interface HomeTemplateProps
   extends InvestmentSettingsProps,
-    ChartPerformanceEachAssetsProps {}
+    ChartPerformanceEachAssetsProps {
+  sumChartData: {
+    [key: string]: number;
+    date: string;
+  }[];
+}
 
 const HomeTemplate = (props: HomeTemplateProps) => {
   return (
@@ -30,6 +35,12 @@ const HomeTemplate = (props: HomeTemplateProps) => {
         stockUsTickerList={props.stockUsTickerList}
         cryptoTickerList={props.cryptoTickerList}
       />
+      {props.sumChartData.length !== 0 && (
+        <ChartPerformanceEachAssets
+          key={JSON.stringify(props.sumChartData)}
+          chartData={props.sumChartData}
+        />
+      )}
       {props.chartData.length !== 0 && (
         <ChartPerformanceEachAssets
           key={JSON.stringify(props.chartData)}

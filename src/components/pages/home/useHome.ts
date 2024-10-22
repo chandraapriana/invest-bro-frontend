@@ -38,6 +38,7 @@ export interface IUseHome {
   handleRepeatType: (type: string) => void;
   handleSubmit: (investmentChoice: InvestmentChoice) => void;
   chartData: ChartData[];
+  sumChartData: ChartData[];
 }
 
 export const useHome = (): IUseHome => {
@@ -53,6 +54,7 @@ export const useHome = (): IUseHome => {
   const [endDate, setEndDate] = useState<string>("");
   const [repeatType, setRepeatType] = useState<string>("monthly");
   const [chartData, setChartData] = useState<ChartData[]>([]);
+  const [sumChartData, setSumChartData] = useState<ChartData[]>([]);
 
   const handleStartDate = useCallback((date: string) => setStartDate(date), []);
   const handleEndDate = useCallback((date: string) => setEndDate(date), []);
@@ -201,6 +203,28 @@ export const useHome = (): IUseHome => {
         ...allHistoryCost[yearMonth],
       }));
       console.log(chartData);
+      const sumChartData = chartData.map((entry) => {
+        let growth = 0;
+        let cost = 0;
+
+        // Iterate through keys and separate GROWTH and COST values
+        Object.keys(entry).forEach((key) => {
+          if (key !== "date") {
+            if (key.includes("COST")) {
+              cost += entry[key];
+            } else {
+              growth += entry[key];
+            }
+          }
+        });
+
+        return {
+          date: entry.date,
+          GROWTH: growth,
+          COST: cost,
+        };
+      });
+      setSumChartData(sumChartData);
       setChartData(chartData);
     },
     [
@@ -223,5 +247,6 @@ export const useHome = (): IUseHome => {
     handleRepeatType,
     handleSubmit,
     chartData,
+    sumChartData,
   };
 };
