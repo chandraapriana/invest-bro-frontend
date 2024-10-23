@@ -51,6 +51,7 @@ export interface InvestmentChoiceProps {
   stockUsTickerList: TickerList;
   cryptoTickerList: TickerList;
   onSubmit: (data: InvestmentChoice) => void;
+  investmentStrategy: any;
 }
 
 const InvestmentChoice = (props: InvestmentChoiceProps) => {
@@ -59,47 +60,52 @@ const InvestmentChoice = (props: InvestmentChoiceProps) => {
       {
         category: "Saham Amerika",
         options: props.stockUsTickerList,
-        selects: [],
+        selects: props.investmentStrategy["US_STOCK"] ?? [],
         isFixed: false,
         key: "US_STOCK", // Valid key
       },
       {
         category: "Saham Indo",
         options: props.stockIdTickerList,
-        selects: [],
+        selects: props.investmentStrategy["ID_STOCK"] ?? [],
         isFixed: false,
         key: "ID_STOCK", // Valid key
       },
       {
         category: "Crypto",
         options: props.cryptoTickerList,
-        selects: [],
+        selects: props.investmentStrategy["CRYPTO"] ?? [],
         isFixed: false,
         key: "CRYPTO", // Valid key
       },
       {
         category: "Gold",
         options: [{ ticker: "GOLD", name: "", logo: "" }],
-        selects: [],
+        selects: props.investmentStrategy["GOLD"] ?? [],
         isFixed: true,
         key: "GOLD", // Valid key
       },
       {
         category: "Reksadana Pendapatan Tetap",
         options: [{ ticker: "RDPT", name: "", logo: "" }],
-        selects: [],
+        selects: props.investmentStrategy["GOLD"] ?? [],
         isFixed: true,
         key: "RDPT", // Valid key
       },
       {
         category: "Reksadana Pasar Uang",
         options: [{ ticker: "RDPU", name: "", logo: "" }],
-        selects: [],
+        selects: props.investmentStrategy["RDPU"] ?? [],
         isFixed: true,
         key: "RDPU", // Valid key
       },
     ],
-    [props.stockIdTickerList, props.stockUsTickerList, props.cryptoTickerList]
+    [
+      props.stockIdTickerList,
+      props.stockUsTickerList,
+      props.cryptoTickerList,
+      props.investmentStrategy,
+    ]
   );
 
   const [investmentOptions, setInvestmentOptions] = useState<
@@ -159,6 +165,7 @@ const InvestmentChoice = (props: InvestmentChoiceProps) => {
   );
 
   const handleSubmit = useCallback(() => {
+    console.log("submit", investmentOptions);
     const result: InvestmentChoice = {
       US_STOCK: [],
       ID_STOCK: [],
@@ -183,6 +190,7 @@ const InvestmentChoice = (props: InvestmentChoiceProps) => {
         }
       });
     });
+    console.log(result);
 
     props.onSubmit(result);
   }, [investmentOptions, props]);

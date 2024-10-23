@@ -148,6 +148,7 @@ export const useHome = (): IUseHome => {
 
   const handleSubmit = useCallback(
     async (data: InvestmentChoice) => {
+      console.log(data);
       const allHistoryGrowth: { [key: string]: { [key: string]: number } } = {}; // To store merged history growth data
       const allHistoryCost: { [key: string]: { [key: string]: number } } = {}; // To store merged history growth data
 

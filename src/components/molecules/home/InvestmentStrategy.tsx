@@ -1,14 +1,210 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { TrendingUp } from "lucide-react";
+import { useMemo } from "react";
 
-export default function InvestmentStrategy() {
+export interface InvestmentStrategyProps {
+  onSelectStrategyRecommended: (data: any) => void;
+}
+
+export default function InvestmentStrategy(props: InvestmentStrategyProps) {
   const strategies = [
     "Aggresive",
     "Moderat",
     "Konservatif",
     "Sangat Konservatif",
   ];
+
+  const investmentRecommend = useMemo(
+    () => ({
+      Aggresive: {
+        US_STOCK: [
+          {
+            id: 0,
+            ticker: "QQQ",
+            startInvestment: "0",
+            regularInvestment: "500000",
+          },
+        ],
+        ID_STOCK: [
+          {
+            id: 0,
+            ticker: "^JKSE",
+            startInvestment: "0",
+            regularInvestment: "250000",
+          },
+        ],
+        CRYPTO: [
+          {
+            id: 0,
+            ticker: "BTC",
+            startInvestment: "0",
+            regularInvestment: "150000",
+          },
+        ],
+        GOLD: [
+          {
+            id: 0,
+            ticker: "GOLD",
+            startInvestment: "0",
+            regularInvestment: "50000",
+          },
+        ],
+        RDPT: [
+          {
+            id: 0,
+            ticker: "GOLD",
+            startInvestment: "0",
+            regularInvestment: "50000",
+          },
+        ],
+      },
+      Moderat: {
+        US_STOCK: [
+          {
+            id: 0,
+            ticker: "QQQ",
+            startInvestment: "0",
+            regularInvestment: "350000",
+          },
+        ],
+        ID_STOCK: [
+          {
+            id: 0,
+            ticker: "^JKSE",
+            startInvestment: "0",
+            regularInvestment: "200000",
+          },
+        ],
+        CRYPTO: [
+          {
+            id: 0,
+            ticker: "BTC",
+            startInvestment: "0",
+            regularInvestment: "100000",
+          },
+        ],
+        GOLD: [
+          {
+            id: 0,
+            ticker: "GOLD",
+            startInvestment: "0",
+            regularInvestment: "150000",
+          },
+        ],
+        RDPT: [
+          {
+            id: 0,
+            ticker: "RDPT",
+            startInvestment: "0",
+            regularInvestment: "150000",
+          },
+        ],
+        RDPU: [
+          {
+            id: 0,
+            ticker: "RDPU",
+            startInvestment: "0",
+            regularInvestment: "50000",
+          },
+        ],
+      },
+      Konservatif: {
+        US_STOCK: [
+          {
+            id: 0,
+            ticker: "QQQ",
+            startInvestment: "0",
+            regularInvestment: 200000,
+          },
+        ],
+        ID_STOCK: [
+          {
+            id: 0,
+            ticker: "^JKSE",
+            startInvestment: "0",
+            regularInvestment: 100000,
+          },
+        ],
+        CRYPTO: [
+          {
+            id: 0,
+            ticker: "BTC",
+            startInvestment: "0",
+            regularInvestment: 50000,
+          },
+        ],
+        GOLD: [
+          {
+            id: 0,
+            ticker: "GOLD",
+            startInvestment: "0",
+            regularInvestment: 250000,
+          },
+        ],
+        RDPT: [
+          {
+            id: 0,
+            ticker: "RDPT",
+            startInvestment: "0",
+            regularInvestment: 250000,
+          },
+        ],
+        RDPU: [
+          {
+            id: 0,
+            ticker: "RDPU",
+            startInvestment: "0",
+            regularInvestment: "150000",
+          },
+        ],
+      },
+      "Sangat Konservatif": {
+        US_STOCK: [
+          {
+            id: 0,
+            ticker: "QQQ",
+            startInvestment: "0",
+            regularInvestment: 100000,
+          },
+        ],
+        ID_STOCK: [
+          {
+            id: 0,
+            ticker: "^JKSE",
+            startInvestment: "0",
+            regularInvestment: 50000,
+          },
+        ],
+
+        GOLD: [
+          {
+            id: 0,
+            ticker: "GOLD",
+            startInvestment: "0",
+            regularInvestment: 300000,
+          },
+        ],
+        RDPT: [
+          {
+            id: 0,
+            ticker: "RDPT",
+            startInvestment: "0",
+            regularInvestment: 400000,
+          },
+        ],
+        RDPU: [
+          {
+            id: 0,
+            ticker: "RDPU",
+            startInvestment: "0",
+            regularInvestment: "150000",
+          },
+        ],
+      },
+    }),
+    []
+  );
 
   return (
     <Card className="w-full max-w-md">
@@ -23,6 +219,9 @@ export default function InvestmentStrategy() {
           {strategies.map((strategy, index) => (
             <Button
               key={index}
+              onClick={() =>
+                props.onSelectStrategyRecommended(investmentRecommend[strategy])
+              }
               variant="outline"
               className="w-full justify-start text-left font-normal"
             >

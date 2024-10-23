@@ -6,13 +6,14 @@ import InvestmentChoice, {
   InvestmentChoiceProps,
 } from "@/components/molecules/home/InvestmentChoice";
 import InvestmentStrategy from "@/components/molecules/home/InvestmentStrategy";
-import React from "react";
+import React, { useState } from "react";
 
 export interface InvestmentSettingsProps
-  extends InvestmentChoiceProps,
+  extends Omit<InvestmentChoiceProps, "investmentStrategy">,
     InvestmentAmountProps {}
 
 const InvestmentSettings = (props: InvestmentSettingsProps) => {
+  const [investmentStrategy, setInvestmentStrategy] = useState({});
   return (
     <div className="flex gap-5 mt-10 flex-row w-full">
       <div className="flex flex-col gap-4">
@@ -21,9 +22,12 @@ const InvestmentSettings = (props: InvestmentSettingsProps) => {
           onChangeStartDate={props.onChangeStartDate}
           onChangeRepeatType={props.onChangeRepeatType}
         />
-        <InvestmentStrategy />
+        <InvestmentStrategy
+          onSelectStrategyRecommended={(data) => setInvestmentStrategy(data)}
+        />
       </div>
       <InvestmentChoice
+        investmentStrategy={investmentStrategy}
         onSubmit={props.onSubmit}
         stockIdTickerList={props.stockIdTickerList}
         stockUsTickerList={props.stockUsTickerList}
