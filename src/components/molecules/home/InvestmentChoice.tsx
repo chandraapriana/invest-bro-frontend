@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Select,
@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { Minus, Plus } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { TickerList } from "@/interface/ticker";
 
@@ -43,7 +43,7 @@ interface InvestmentOption {
   options: TickerList;
   selects: SelectOption[];
   isFixed: boolean;
-  key: InvestmentKey;
+  key: InvestmentKey; // This ensures 'key' is one of the keys of InvestmentChoice
 }
 
 export interface InvestmentChoiceProps {
@@ -54,64 +54,63 @@ export interface InvestmentChoiceProps {
 }
 
 const InvestmentChoice = (props: InvestmentChoiceProps) => {
-  const [investmentOptions, setInvestmentOptions] = useState<
-    InvestmentOption[]
-  >([]);
-
-  useEffect(() => {
-    const initialInvestmentOptions: InvestmentOption[] = [
+  const initialInvestmentOptions = useMemo<InvestmentOption[]>(
+    () => [
       {
         category: "Saham Amerika",
         options: props.stockUsTickerList,
         selects: [],
         isFixed: false,
-        key: "US_STOCK",
+        key: "US_STOCK", // Valid key
       },
       {
         category: "Saham Indo",
         options: props.stockIdTickerList,
         selects: [],
         isFixed: false,
-        key: "ID_STOCK",
+        key: "ID_STOCK", // Valid key
       },
       {
         category: "Crypto",
         options: props.cryptoTickerList,
         selects: [],
         isFixed: false,
-        key: "CRYPTO",
+        key: "CRYPTO", // Valid key
       },
       {
         category: "Gold",
         options: [{ ticker: "GOLD", name: "", logo: "" }],
         selects: [],
         isFixed: true,
-        key: "GOLD",
+        key: "GOLD", // Valid key
       },
       {
         category: "Reksadana Pendapatan Tetap",
         options: [{ ticker: "RDPT", name: "", logo: "" }],
         selects: [],
         isFixed: true,
-        key: "RDPT",
+        key: "RDPT", // Valid key
       },
       {
         category: "Reksadana Pasar Uang",
         options: [{ ticker: "RDPU", name: "", logo: "" }],
         selects: [],
         isFixed: true,
-        key: "RDPU",
+        key: "RDPU", // Valid key
       },
-    ];
+    ],
+    [props.stockIdTickerList, props.stockUsTickerList, props.cryptoTickerList]
+  );
 
+  const [investmentOptions, setInvestmentOptions] = useState<
+    InvestmentOption[]
+  >(initialInvestmentOptions);
+
+  useEffect(() => {
     setInvestmentOptions(initialInvestmentOptions);
-  }, [
-    props.stockIdTickerList,
-    props.stockUsTickerList,
-    props.cryptoTickerList,
-  ]);
+  }, [initialInvestmentOptions]);
 
-  const addSelect = (categoryIndex: number) => {
+  const addSelect = useCallback((categoryIndex: number) => {
     setInvestmentOptions((prevOptions) => {
       const newOptions = [...prevOptions];
       const newSelectId = newOptions[categoryIndex].selects.length;
@@ -125,25 +124,41 @@ const InvestmentChoice = (props: InvestmentChoiceProps) => {
       });
       return newOptions;
     });
-  };
+  }, []);
 
-  const updateSelect = (
-    categoryIndex: number,
-    selectIndex: number,
-    field: keyof SelectOption,
-    value: string
-  ) => {
-    setInvestmentOptions((prevOptions) => {
-      const newOptions = [...prevOptions];
-      newOptions[categoryIndex].selects[selectIndex] = {
-        ...newOptions[categoryIndex].selects[selectIndex],
-        [field]: value,
-      };
-      return newOptions;
-    });
-  };
+  const updateSelect = useCallback(
+    (
+      categoryIndex: number,
+      selectIndex: number,
+      field: keyof SelectOption,
+      value: string
+    ) => {
+      setInvestmentOptions((prevOptions) => {
+        const newOptions = [...prevOptions];
+        newOptions[categoryIndex].selects[selectIndex] = {
+          ...newOptions[categoryIndex].selects[selectIndex],
+          [field]: value,
+        };
+        return newOptions;
+      });
+    },
+    []
+  );
 
-  const handleSubmit = () => {
+  const removeSelect = useCallback(
+    (categoryIndex: number, selectIndex: number) => {
+      setInvestmentOptions((prevOptions) => {
+        const newOptions = [...prevOptions];
+        newOptions[categoryIndex].selects = newOptions[
+          categoryIndex
+        ].selects.filter((_, idx) => idx !== selectIndex);
+        return newOptions;
+      });
+    },
+    []
+  );
+
+  const handleSubmit = useCallback(() => {
     const result: InvestmentChoice = {
       US_STOCK: [],
       ID_STOCK: [],
@@ -169,9 +184,8 @@ const InvestmentChoice = (props: InvestmentChoiceProps) => {
       });
     });
 
-    console.log(result);
     props.onSubmit(result);
-  };
+  }, [investmentOptions, props]);
 
   return (
     <div className="flex flex-col w-full gap-4">
@@ -255,7 +269,7 @@ const InvestmentChoice = (props: InvestmentChoiceProps) => {
                       }
                     />
                   </div>
-                  <div>
+                  <div className="flex flex-row gap-2">
                     <Input
                       type="number"
                       placeholder="100.000"
@@ -270,6 +284,13 @@ const InvestmentChoice = (props: InvestmentChoiceProps) => {
                         )
                       }
                     />
+                    <Button
+                      size="icon"
+                      variant="destructive"
+                      onClick={() => removeSelect(categoryIndex, selectIndex)}
+                    >
+                      <Minus className="h-4 w-4" />
+                    </Button>
                   </div>
                 </div>
               ))}
