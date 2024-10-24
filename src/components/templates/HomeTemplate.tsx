@@ -11,6 +11,7 @@ import {
   ChartPerformanceEachAssets,
   ChartPerformanceEachAssetsProps,
 } from "../organism/home/ChartPerformanceEachAssets";
+import { InvestmentTableComparison } from "../organism/home/InvestmentTableComparison";
 
 export interface HomeTemplateProps
   extends InvestmentSettingsProps,
@@ -26,29 +27,38 @@ const HomeTemplate = (props: HomeTemplateProps) => {
     <MainContainer>
       <Header />
       <MainText />
-      <InvestmentSettings
-        onChangeEndDate={props.onChangeEndDate}
-        onChangeRepeatType={props.onChangeRepeatType}
-        onChangeStartDate={props.onChangeStartDate}
-        onSubmit={props.onSubmit}
-        stockIdTickerList={props.stockIdTickerList}
-        stockUsTickerList={props.stockUsTickerList}
-        cryptoTickerList={props.cryptoTickerList}
-      />
-      {props.sumChartData.length !== 0 && (
-        <ChartPerformanceEachAssets
-          title="Performa Keseluruhan Portfolio"
-          key={JSON.stringify(props.sumChartData)}
-          chartData={props.sumChartData}
+      <div className="flex flex-col gap-5">
+        <InvestmentSettings
+          onChangeEndDate={props.onChangeEndDate}
+          onChangeRepeatType={props.onChangeRepeatType}
+          onChangeStartDate={props.onChangeStartDate}
+          onSubmit={props.onSubmit}
+          stockIdTickerList={props.stockIdTickerList}
+          stockUsTickerList={props.stockUsTickerList}
+          cryptoTickerList={props.cryptoTickerList}
         />
-      )}
-      {props.chartData.length !== 0 && (
-        <ChartPerformanceEachAssets
-          title="Performa Portfolio Setiap Aset"
-          key={JSON.stringify(props.chartData)}
-          chartData={props.chartData}
-        />
-      )}
+        {props.sumChartData.length !== 0 && (
+          <ChartPerformanceEachAssets
+            title="Performa Keseluruhan Portfolio"
+            key={JSON.stringify(props.sumChartData)}
+            chartData={props.sumChartData}
+          />
+        )}
+        {props.chartData.length !== 0 && (
+          <ChartPerformanceEachAssets
+            title="Performa Portfolio Setiap Aset"
+            key={JSON.stringify(props.chartData)}
+            chartData={props.chartData}
+          />
+        )}
+
+        {props.chartData.length !== 0 && (
+          <InvestmentTableComparison
+            key={JSON.stringify(props.chartData) + "table"}
+            chartData={props.chartData}
+          />
+        )}
+      </div>
     </MainContainer>
   );
 };
