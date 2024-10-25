@@ -9,6 +9,7 @@ export interface InvestmentStrategyProps {
 
 export default function InvestmentStrategy(props: InvestmentStrategyProps) {
   const strategies = [
+    "7 Magnificent Stock",
     "Aggresive",
     "Moderat",
     "Konservatif",
@@ -17,6 +18,52 @@ export default function InvestmentStrategy(props: InvestmentStrategyProps) {
 
   const investmentRecommend = useMemo(
     () => ({
+      "7 Magnificent Stock": {
+        US_STOCK: [
+          {
+            id: 0,
+            ticker: "AAPL",
+            startInvestment: "0",
+            regularInvestment: "200000",
+          },
+          {
+            id: 1,
+            ticker: "MSFT",
+            startInvestment: "0",
+            regularInvestment: "200000",
+          },
+          {
+            id: 2,
+            ticker: "GOOG",
+            startInvestment: "0",
+            regularInvestment: "200000",
+          },
+          {
+            id: 2,
+            ticker: "NVDA",
+            startInvestment: "0",
+            regularInvestment: "200000",
+          },
+          {
+            id: 2,
+            ticker: "AMZN",
+            startInvestment: "0",
+            regularInvestment: "200000",
+          },
+          {
+            id: 2,
+            ticker: "META",
+            startInvestment: "0",
+            regularInvestment: "200000",
+          },
+          {
+            id: 2,
+            ticker: "TSLA",
+            startInvestment: "0",
+            regularInvestment: "200000",
+          },
+        ],
+      },
       Aggresive: {
         US_STOCK: [
           {

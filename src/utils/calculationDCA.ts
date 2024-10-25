@@ -78,7 +78,8 @@ export function calculateStableDCA(
   intervalInvestment: "daily" | "weekly" | "monthly",
   startDate: string,
   endDate: string,
-  annualReturn: number
+  annualReturn: number,
+  initialInvestment: number
 ): {
   totalUnits: number;
   totalInvested: number;
@@ -90,9 +91,10 @@ export function calculateStableDCA(
   const end = new Date(endDate);
   const historyGrowth: { date: string; value: number }[] = [];
   const historyCost: { date: string; value: number }[] = [];
-
+  let isInitialInvestment = Boolean(initialInvestment);
   let totalInvested = 0;
   let currentValue = 0;
+
   const dailyReturn = Math.pow(1 + annualReturn / 100, 1 / 365) - 1;
 
   const investments: { date: Date; amount: number }[] = [];
@@ -140,11 +142,22 @@ export function calculateStableDCA(
     if (investmentDate > end) break;
 
     // Record each investment
-    investments.push({
-      date: new Date(investmentDate),
-      amount: regularInvestment,
-    });
-    totalInvested += regularInvestment;
+    if (isInitialInvestment) {
+      // Membeli unit berdasarkan harga
+      currentValue += initialInvestment;
+      investments.push({
+        date: new Date(investmentDate),
+        amount: regularInvestment + initialInvestment,
+      });
+      totalInvested += regularInvestment + initialInvestment;
+      isInitialInvestment = false;
+    } else {
+      investments.push({
+        date: new Date(investmentDate),
+        amount: regularInvestment,
+      });
+      totalInvested += regularInvestment;
+    }
 
     // Calculate the current value with compounding
     currentValue = investments.reduce((total, investment) => {
@@ -183,7 +196,8 @@ export function calculateStableDCA(
 export function calculateDCA(
   historicalData: { [key: string]: number },
   regularInvestment: number,
-  intervalInvestment: "daily" | "weekly" | "monthly"
+  intervalInvestment: "daily" | "weekly" | "monthly",
+  initialInvestment: number
 ): {
   totalUnits: number;
   totalInvested: number;
@@ -199,6 +213,14 @@ export function calculateDCA(
 
   let totalUnits = 0;
   let totalInvested = 0;
+  const firstDate = Object.keys(historicalData)[0];
+
+  if (initialInvestment) {
+    totalUnits += initialInvestment / historicalData[dates[0]]; // Membeli unit berdasarkan harga
+    totalInvested += initialInvestment;
+    console.log("Date", firstDate);
+    console.log("Date", dates);
+  }
   let lastInvestmentMonth: number | null = null; // Menyimpan bulan terakhir investasi
 
   // Helper function untuk mendapatkan hari Selasa yang valid

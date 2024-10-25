@@ -1,4 +1,6 @@
-import InvestmentChoice from "@/components/molecules/home/InvestmentChoice";
+import InvestmentChoice, {
+  InvestmentItem,
+} from "@/components/molecules/home/InvestmentChoice";
 import {
   IUseGetCryptoTickerListQuery,
   useGetCryptoTickerListQuery,
@@ -89,7 +91,7 @@ export const useHome = (): IUseHome => {
   // Generalized handler for fetching data and calculating DCA
   const processInvestmentData = useCallback(
     async (
-      dataArray: { ticker: string; regularInvestment: number }[],
+      dataArray: InvestmentItem[],
       fetchData: (
         param: { name: string; start_date: string; end_date: string }[]
       ) => Promise<{ [key: string]: HistoryGrowth[] }>,
@@ -111,7 +113,8 @@ export const useHome = (): IUseHome => {
           const { historyGrowth, historyCost } = calculateDCA(
             history,
             stockData.regularInvestment,
-            repeatType
+            repeatType,
+            stockData.startInvestment
           );
           mergeHistoryGrowth(historyGrowth, ticker, allHistoryGrowth);
           mergeHistoryGrowth(historyCost, ticker + "-COST", allHistoryCost);
@@ -137,7 +140,8 @@ export const useHome = (): IUseHome => {
           repeatType,
           startDate,
           endDate,
-          rate
+          rate,
+          dataType.startInvestment
         );
         mergeHistoryGrowth(historyGrowth, type, allHistoryGrowth);
         mergeHistoryGrowth(historyCost, type + "-COST", allHistoryCost);
@@ -148,7 +152,6 @@ export const useHome = (): IUseHome => {
 
   const handleSubmit = useCallback(
     async (data: InvestmentChoice) => {
-      console.log(data);
       const allHistoryGrowth: { [key: string]: { [key: string]: number } } = {}; // To store merged history growth data
       const allHistoryCost: { [key: string]: { [key: string]: number } } = {}; // To store merged history growth data
 
@@ -197,13 +200,13 @@ export const useHome = (): IUseHome => {
         processStableData("RDPT", 6, data, allHistoryGrowth, allHistoryCost);
       if (data.RDPU.length !== 0)
         processStableData("RDPU", 4, data, allHistoryGrowth, allHistoryCost);
-      console.log(allHistoryGrowth);
+
       // Convert allHistoryGrowth object into an array for charting
       const chartData = Object.keys(allHistoryGrowth).map((yearMonth) => ({
         ...allHistoryGrowth[yearMonth],
         ...allHistoryCost[yearMonth],
       }));
-      console.log(chartData);
+
       const sumChartData = chartData.map((entry) => {
         let growth = 0;
         let cost = 0;

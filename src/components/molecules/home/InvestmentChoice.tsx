@@ -21,7 +21,7 @@ interface SelectOption {
   regularInvestment: string;
 }
 
-interface InvestmentItem {
+export interface InvestmentItem {
   ticker: string;
   startInvestment: number;
   regularInvestment: number;
