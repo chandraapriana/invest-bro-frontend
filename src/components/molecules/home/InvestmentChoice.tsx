@@ -10,9 +10,10 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Minus, Plus } from "lucide-react";
+import { Minus, Plus, Save } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { TickerList } from "@/interface/ticker";
+import { ModalSaveStrategy } from "@/components/organism/home/ModalSaveStrategy";
 
 interface SelectOption {
   id: number;
@@ -306,9 +307,12 @@ const InvestmentChoice = (props: InvestmentChoiceProps) => {
           ))}
         </CardContent>
       </Card>
-      <Button className="w-full" onClick={handleSubmit}>
-        Hitung Investasi
-      </Button>
+      <div className="flex flex-row gap-2">
+        <ModalSaveStrategy />
+        <Button className="w-full" onClick={handleSubmit}>
+          Hitung Investasi
+        </Button>
+      </div>
     </div>
   );
 };
