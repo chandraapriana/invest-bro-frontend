@@ -6,6 +6,11 @@ WORKDIR /app
 
 # Copy package.json dan package-lock.json (jika ada)
 COPY package.json package-lock.json ./
+ENV NODE_ENV=production
+
+ARG NEXT_PUBLIC_ENDPOINT_URL
+ENV NEXT_PUBLIC_ENDPOINT_URL=${NEXT_PUBLIC_ENDPOINT_URL}
+RUN echo "value for NEXT_PUBLIC_ENDPOINT_URL: [${NEXT_PUBLIC_ENDPOINT_URL}]"
 
 # Install dependencies
 RUN npm ci --legacy-peer-deps
