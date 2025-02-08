@@ -1,0 +1,34 @@
+name: Build & Deploy Next.js
+
+on:
+  push:
+    branches: ["main"]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Install CapRover CLI
+      - name: Install CapRover CLI
+        run: npm install -g caprover
+
+      # Pastikan captain-definition ada
+      - name: Verify captain-definition
+        run: |
+          if [ ! -f captain-definition ]; then
+            echo "Captain definition file is missing!"
+            exit 1
+          fi
+
+      # Deploy ke CapRover dengan CLI
+      - name: Deploy App to CapRover
+        run: |
+          caprover deploy \
+            -h "${{ secrets.SERVER }}" \
+            -p "${{ secrets.APP_TOKEN }}" \
+            -b main \
+            -a "${{ secrets.APP_NAME }}"
